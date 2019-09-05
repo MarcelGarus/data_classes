@@ -10,10 +10,10 @@ Simply add it to your dependencies like this:
 
 ```yaml
 dependencies:
-  data_classes: ^1.0.2
+  data_classes: ^1.1.0
 
 dev_dependencies:
-  data_classes_generator: ^1.0.1
+  data_classes_generator: ^1.1.0
 ```
 
 Then, you can write data classes by letting their name start with `Mutable` and
@@ -28,12 +28,12 @@ part 'my_file.g.dart';
 class MutableUser {
   String firstName;
   String lastName;
-  @Nullable() String photoUrl;
+  @nullable String photoUrl;
 }
 ```
 
 By default, attributes are considered non-nullable. If you want an attribute to
-be nullable, annotate it with `@Nullable()`.
+be nullable, annotate it with `@nullable`.
 
 By running `pub run build_runner build` in the command line (or
 `flutter pub run build_runner build`, if you're using Flutter), the
@@ -107,6 +107,14 @@ class User {
       lastName: lastName ?? this.lastName,
       photoUrl: photoUrl ?? this.photoUrl,
     );
+  }
+
+  String toString() {
+    return 'User(\n'
+      '  firstName: $firstName\n'
+      '  lastName: $lastName\n'
+      '  photoUrl: $photoUrl\n'
+      ')';
   }
 }
 ```

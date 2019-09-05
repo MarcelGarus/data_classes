@@ -7,8 +7,8 @@ homepage: https://github.com/marcelgarus/flutter_data_classes
 dependencies:
   flutter:
     sdk: flutter
-  data_classes: ^1.0.2
+  data_classes: ^1.1.0
 
 dev_dependencies:
   build_runner: ^1.0.0
-  data_classes_generator: ^1.0.3
+  data_classes_generator: ^1.1.0

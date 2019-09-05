@@ -1,5 +1,5 @@
 import 'package:build_runner_core/build_runner_core.dart' as _i1;
-import 'package:data_classes_generator/builder.dart' as _i2;
+import 'package:data_classes_generator/data_classes_generator.dart' as _i2;
 import 'package:source_gen/builder.dart' as _i3;
 import 'package:build_config/build_config.dart' as _i4;
 import 'dart:isolate' as _i5;

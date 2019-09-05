@@ -6,7 +6,7 @@ part of 'main.dart';
 // DataClassGenerator
 // **************************************************************************
 
-/// This class is the immutable data class pendant of the mutable $User class.
+/// This class is the immutable pendant of the MutableUser class.
 @immutable
 class User {
   final String firstName;
@@ -21,8 +21,8 @@ class User {
   })  : assert(firstName != null),
         assert(lastName != null);
 
-  /// Creates a User from a mutable $User;
-  factory User.fromMutable($User mutable) {
+  /// Creates a User from a MutableUser.
+  factory User.fromMutable(MutableUser mutable) {
     return User(
       firstName: mutable.firstName,
       lastName: mutable.lastName,
@@ -30,9 +30,9 @@ class User {
     );
   }
 
-  /// Turns this User into a mutable $User.
-  $User toMutable() {
-    return $User()
+  /// Turns this User into a MutableUser.
+  MutableUser toMutable() {
+    return MutableUser()
       ..firstName = firstName
       ..lastName = lastName
       ..photoUrl = photoUrl;
@@ -46,7 +46,11 @@ class User {
         photoUrl == other.photoUrl;
   }
 
-  int get hashCode => hashList([firstName, lastName, photoUrl]);
+  int get hashCode => hashList([
+        firstName,
+        lastName,
+        photoUrl,
+      ]);
 
   User copyWith({
     String firstName,

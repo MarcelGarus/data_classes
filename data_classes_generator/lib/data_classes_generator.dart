@@ -11,10 +11,11 @@ class DataClassGenerator extends GeneratorForAnnotation<DataClass> {
   @override
   generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep _) {
-    assert(element is ClassElement, 'Only annotate classes with @DataClass.');
+    assert(
+        element is ClassElement, 'Only annotate classes with `@DataClass()`.');
     assert(
         element.name.startsWith('Mutable'),
-        'The names of classes annotated with @DataClass should start with '
+        'The names of classes annotated with `@DataClass()` should start with '
         '`Mutable`, for example `MutableUser`. The immutable class will then '
         'get automatically generated for you by running '
         '`pub run build_runner build` (or `flutter pub run build_runner build` '
@@ -26,13 +27,17 @@ class DataClassGenerator extends GeneratorForAnnotation<DataClass> {
     var getters = <FieldElement>{};
 
     for (var field in e.fields) {
-      if (field.setter == null) {
+      if (field.isFinal) {
+        throw "`Mutable` classes shouldn't have final fields.";
+      } else if (field.setter == null) {
         assert(field.getter != null);
         getters.add(field);
       } else if (field.getter == null) {
-        throw 'Setter-only fields not supported';
-      } else
+        assert(field.setter != null);
+        throw "`Mutable` classes don't support setter-only fields";
+      } else {
         fields.add(field);
+      }
     }
 
     return '''
@@ -68,13 +73,18 @@ class DataClassGenerator extends GeneratorForAnnotation<DataClass> {
       }) {
         return $name(${fields.map((field) => field.name).map((fieldName) => '$fieldName: $fieldName ?? this.$fieldName,').join()});
       }
+
+      String toString() {
+        return '$name\n'
+          ${fields.map((field) => "'  ${field.name}: \$${field.name}\n'").join('\n')}
+          ')';
+      }
     }
     ''';
   }
 
-  bool _isNullable(FieldElement field) => field.metadata.any((annotation) =>
-      annotation.element is ConstructorElement &&
-      annotation.element.enclosingElement.name == 'Nullable');
+  bool _isNullable(FieldElement field) =>
+      field.metadata.any((annotation) => annotation.element.name == 'nullable');
 
   String _fieldToTypeAndName(FieldElement field) =>
       '${field.type.name} ${field.name}';

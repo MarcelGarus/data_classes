@@ -12,6 +12,6 @@ class MutableUser {
   String firstName;
   String lastName;
 
-  @Nullable()
+  @nullable
   String photoUrl;
 }

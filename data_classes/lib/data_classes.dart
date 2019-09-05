@@ -4,9 +4,7 @@ class DataClass {
   const DataClass();
 }
 
-class Nullable {
-  const Nullable();
-}
+const String nullable = 'nullable';
 
 /// Combine the [Object.hashCode] values of an arbitrary number of objects from
 /// an [Iterable] into one value. This function will return the same value if

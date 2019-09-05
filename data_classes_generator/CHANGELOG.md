@@ -1,3 +1,9 @@
+## 1.1.0 - 2019-09-05
+
+- Change `@Nullable()` annotation to `@nullable`.
+- Add `toString()` method to generated class.
+- Make sure there are no `final` fields in the mutable class.
+
 ## 1.0.3 - 2019-09-04
 
 - Relax those version constraints even further.

@@ -1,3 +1,7 @@
+## 1.1.0 - 2019-09-05
+
+- Change `@Nullable()` annotation to `@nullable`.
+
 ## 1.0.2 - 2019-09-04
 
 - Rename example's mutable class to `MutableUser`. Also adjust the readme
