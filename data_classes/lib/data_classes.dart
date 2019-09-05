@@ -1,5 +1,4 @@
-export 'dart:ui';
-export 'package:flutter/foundation.dart';
+export 'package:meta/meta.dart' show immutable, required;
 
 class DataClass {
   const DataClass();
