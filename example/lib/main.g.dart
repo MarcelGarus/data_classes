@@ -63,4 +63,12 @@ class User {
       photoUrl: photoUrl ?? this.photoUrl,
     );
   }
+
+  String toString() {
+    return 'User\n'
+        '  firstName: $firstName\n'
+        '  lastName: $lastName\n'
+        '  photoUrl: $photoUrl\n'
+        ')';
+  }
 }

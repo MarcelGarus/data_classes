@@ -1,3 +1,7 @@
+## 1.1.1 - 2019-09-05
+
+- Fix newline issue in `toString()`.
+
 ## 1.1.0 - 2019-09-05
 
 - Change `@Nullable()` annotation to `@nullable`.

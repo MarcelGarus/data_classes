@@ -75,8 +75,8 @@ class DataClassGenerator extends GeneratorForAnnotation<DataClass> {
       }
 
       String toString() {
-        return '$name\n'
-          ${fields.map((field) => "'  ${field.name}: \$${field.name}\n'").join('\n')}
+        return '$name(\\n'
+          ${fields.map((field) => "'  ${field.name}: \$${field.name}\\n'").join('\n')}
           ')';
       }
     }
