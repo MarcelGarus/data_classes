@@ -8,7 +8,7 @@ void main() {
 }
 
 @DataClass()
-class $User {
+class MutableUser {
   String firstName;
   String lastName;
 

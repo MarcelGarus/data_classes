@@ -130,17 +130,17 @@ packages:
   data_classes:
     dependency: "direct main"
     description:
-      path: "..\\data_classes"
-      relative: true
-    source: path
-    version: "1.0.0"
+      name: data_classes
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   data_classes_generator:
     dependency: "direct dev"
     description:
-      path: "..\\data_classes_generator"
-      relative: true
-    source: path
-    version: "1.0.0"
+      name: data_classes_generator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
   fixnum:
     dependency: transitive
     description:
