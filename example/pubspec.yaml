@@ -1,5 +1,5 @@
 name: example
-description: An example for flutter data class generation.
+description: Automatically generates immutable data classes for you based on a blueprint class.
 version: 1.0.0
 author: Marcel Garus <marcel.garus@gmail.com>
 homepage: https://github.com/marcelgarus/flutter_data_classes
