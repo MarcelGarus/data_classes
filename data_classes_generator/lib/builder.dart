@@ -59,7 +59,7 @@ class DataClassGenerator extends GeneratorForAnnotation<DataClass> {
             ${fields.map((field) => '${field.name} == other.${field.name}').join('&&')};
       }
 
-      int get hashCode => hashValues(${fields.map((field) => field.name).join(', ')});
+      int get hashCode => hashList([${fields.map((field) => field.name).join(', ')}]);
 
       $name copyWith({
         ${fields.map((field) => '${_fieldToTypeAndName(field)},').join()}

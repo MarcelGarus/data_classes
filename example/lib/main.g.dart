@@ -46,7 +46,7 @@ class User {
         photoUrl == other.photoUrl;
   }
 
-  int get hashCode => hashValues(firstName, lastName, photoUrl);
+  int get hashCode => hashList([firstName, lastName, photoUrl]);
 
   User copyWith({
     String firstName,
