@@ -1,0 +1,12 @@
+name: data_classes
+description: Automatically generates immutable data classes for you.
+version: 1.0.0
+author: Marcel Garus <marcel.garus@gmail.com>
+homepage: https://github.com/marcelgarus/data_classes
+
+environment:
+  sdk: ">=2.2.0 <3.0.0" 
+
+dependencies:
+  flutter:
+    sdk: flutter
