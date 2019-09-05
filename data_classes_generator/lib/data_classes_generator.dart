@@ -13,12 +13,15 @@ class DataClassGenerator extends GeneratorForAnnotation<DataClass> {
       Element element, ConstantReader annotation, BuildStep _) {
     assert(element is ClassElement, 'Only annotate classes with @DataClass.');
     assert(
-        element.name.startsWith('\$'),
-        'Classes annotated with @DataClass should start with \$. The non-\$ '
-        'class will then get automatically generated for you.');
+        element.name.startsWith('Mutable'),
+        'The names of classes annotated with @DataClass should start with '
+        '`Mutable`, for example `MutableUser`. The immutable class will then '
+        'get automatically generated for you by running '
+        '`pub run build_runner build` (or `flutter pub run build_runner build` '
+        'if you\'re on Flutter).');
 
     var e = element as ClassElement;
-    var name = e.name.substring(1);
+    var name = e.name.substring('Mutable'.length);
     var fields = <FieldElement>{};
     var getters = <FieldElement>{};
 
@@ -33,23 +36,22 @@ class DataClassGenerator extends GeneratorForAnnotation<DataClass> {
     }
 
     return '''
-    /// This class is the immutable data class pendant of the mutable \$$name class.
+    /// This class is the immutable pendant of the Mutable$name class.
     @immutable
     class $name {
       ${fields.map((field) => 'final ${_fieldToTypeAndName(field)};').join()}
-      ${getters.map((getter) => '').join()}
 
       /// Default constructor that creates a $name.
       const $name({${fields.map((field) => '${_isNullable(field) ? '' : '@required'} this.${field.name},').join()}}) : ${fields.where((field) => !_isNullable(field)).map((field) => 'assert(${field.name} != null)').join(',')};
 
-      /// Creates a $name from a mutable \$$name;
-      factory $name.fromMutable(\$$name mutable) {
+      /// Creates a $name from a Mutable$name.
+      factory $name.fromMutable(Mutable$name mutable) {
         return $name(${fields.map((field) => '${field.name}: mutable.${field.name},').join()});
       }
 
-      /// Turns this $name into a mutable \$$name.
-      \$$name toMutable() {
-        return \$$name()
+      /// Turns this $name into a Mutable$name.
+      Mutable$name toMutable() {
+        return Mutable$name()
           ${fields.map((field) => '..${field.name} = ${field.name}').join()};
       }
 
@@ -59,7 +61,7 @@ class DataClassGenerator extends GeneratorForAnnotation<DataClass> {
             ${fields.map((field) => '${field.name} == other.${field.name}').join('&&')};
       }
 
-      int get hashCode => hashList([${fields.map((field) => field.name).join(', ')}]);
+      int get hashCode => hashList([${fields.map((field) => '${field.name},').join()}]);
 
       $name copyWith({
         ${fields.map((field) => '${_fieldToTypeAndName(field)},').join()}

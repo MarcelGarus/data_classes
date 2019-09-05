@@ -7,7 +7,7 @@ targets:
 builders:
   data_classes:
     target: ":data_classes_generator"
-    import: "package:data_classes_generator/builder.dart"
+    import: "package:data_classes_generator/data_classes_generator.dart"
     builder_factories: ["generateDataClass"]
     build_extensions: {".dart": [".data_classes.g.part"]}
     auto_apply: dependents
