@@ -1,120 +1,109 @@
 Hey there!
 If you're reading this and want data classes to become a language-level feature
 of Dart, consider giving
-[this issue](https://github.com/dart-lang/language/issues/314) a thumbs up.
+[this issue](https://github.com/dart-lang/language/issues/314) a thumbs up. 👍
 
 In the meantime, this library generates immutable data classes for you based on
-simple mutable blueprint classes.
+simple mutable blueprint classes. Here's how to get started:
 
-Simply add it to your dependencies like this:
+**1.** 📦 Add these packages to your dependencies:
 
 ```yaml
 dependencies:
-  data_classes: ^1.1.0
+  data_classes: [insert newest version here]
 
 dev_dependencies:
-  data_classes_generator: ^1.1.0
+  build_runner: ^1.0.0
+  data_classes_generator: [insert newest version here]
 ```
 
-Then, you can write data classes by letting their name start with `Mutable` and
-annotating them with `@DataClass()`, like this:
+**2.** 🧬 Write a blueprint class. Let the name start with `Mutable` and
+annotate it with `@GenerateDataClassFor()`:
 
 ```dart
 import 'package:data_classes/data_classes.dart';
 
 part 'my_file.g.dart';
 
-@DataClass()
-class MutableUser {
-  String firstName;
-  String lastName;
-  @nullable String photoUrl;
+@GenerateDataClassFor()
+class MutableFruit {
+  String type;
+  @nullable String color;
 }
 ```
 
 By default, attributes are considered non-nullable. If you want an attribute to
 be nullable, annotate it with `@nullable`.
 
-By running `pub run build_runner build` in the command line (or
-`flutter pub run build_runner build`, if you're using Flutter), the
-implementation based on your mutable class is automatically generated.
+**3.** 🏭 Run `pub run build_runner build` in the command line (or
+`flutter pub run build_runner build`, if you're using Flutter). The
+implementation based on your mutable class will automatically get generated.
 
 The immutable class contains
 
-* a constructor with named parameters and assertion for values that shouldn't
-  be [null],
-* serialization method/constructor for converting the immutable class to the
-  the mutable class and the other way around,
-* custom implementations of `==` and `hashCode`,
-* a `copyWith` function.
+* a constructor with named parameters and assertions for values that shouldn't
+  be `null`,
+* method/constructor for converting the immutable class to the mutable class
+  and the other way around,
+* custom implementations of `==` and `hashCode` as well as `toString()`,
+* a `copy` method.
 
-For example, here's the generated code of our 6-line-class above:
+For example, here's the generated code of our 5-line-class above:
 
 ```dart
-/// This class is the immutable data class pendant of the MutableUser class.
+/// This class is the immutable pendant of the [MutableFruit] class.
 @immutable
-class User {
-  final String firstName;
-  final String lastName;
-  final String photoUrl;
+class Fruit {
+  final String type;
+  final String color;
 
-  /// Default constructor that creates a User.
-  const User({
-    @required this.firstName,
-    @required this.lastName,
-    this.photoUrl,
-  })  : assert(firstName != null),
-        assert(lastName != null);
+  /// Default constructor that creates a new [Fruit] with the given attributes.
+  const Fruit({
+    @required this.type,
+    this.color,
+  }) : assert(type != null);
 
-  /// Creates a User from a MutableUser.
-  factory User.fromMutable($User mutable) {
-    return User(
-      firstName: mutable.firstName,
-      lastName: mutable.lastName,
-      photoUrl: mutable.photoUrl,
-    );
+  /// Creates a [Fruit] from a [MutableFruit].
+  Fruit.fromMutable(MutableFruit mutable)
+      : type = mutable.type,
+        color = mutable.color;
+
+  /// Turns this [Fruit] into a [MutableFruit].
+  MutableFruit toMutable() {
+    return MutableFruit()
+      ..type = type
+      ..color = color;
   }
 
-  /// Turns this User into a MutableUser.
-  $User toMutable() {
-    return $User()
-      ..firstName = firstName
-      ..lastName = lastName
-      ..photoUrl = photoUrl;
-  }
-
-  /// Checks if this User is equal to the other one.
+  /// Checks if this [Fruit] is equal to the other one.
   bool operator ==(Object other) {
-    return other is User &&
-        firstName == other.firstName &&
-        lastName == other.lastName &&
-        photoUrl == other.photoUrl;
+    return other is Fruit && type == other.type && color == other.color;
   }
 
   int get hashCode => hashList([
-      firstName,
-      lastName,
-      photoUrl,
-    ]);
+        type,
+        color,
+      ]);
 
-  User copyWith({
-    String firstName,
-    String lastName,
-    String photoUrl,
-  }) {
-    return User(
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      photoUrl: photoUrl ?? this.photoUrl,
-    );
+  /// Copies this [Fruit] with some changed attributes.
+  Fruit copy(void Function(MutableFruit mutable) changeAttributes) {
+    assert(
+        changeAttributes != null,
+        "You called Fruit.copy, but didn't provide a function for changing "
+        "the attributes.\n"
+        "If you just want an unchanged copy: You don't need one, just use "
+        "the original.");
+    var mutable = this.toMutable();
+    changeAttributes(mutable);
+    return Fruit.fromMutable(mutable);
   }
 
+  /// Converts this [Fruit] into a [String].
   String toString() {
-    return 'User(\n'
-      '  firstName: $firstName\n'
-      '  lastName: $lastName\n'
-      '  photoUrl: $photoUrl\n'
-      ')';
+    return 'Fruit(\n'
+        '  type: $type\n'
+        '  color: $color\n'
+        ')';
   }
 }
 ```

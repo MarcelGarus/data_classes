@@ -1,7 +1,13 @@
 export 'package:meta/meta.dart' show immutable, required;
 
-class DataClass {
-  const DataClass();
+import 'package:meta/meta.dart';
+
+@immutable
+class GenerateDataClassFor {
+  final bool generateCopy;
+
+  const GenerateDataClassFor({this.generateCopy = true})
+      : assert(generateCopy != null);
 }
 
 const String nullable = 'nullable';
@@ -9,8 +15,7 @@ const String nullable = 'nullable';
 /// Combine the [Object.hashCode] values of an arbitrary number of objects from
 /// an [Iterable] into one value. This function will return the same value if
 /// given null as if given an empty list.
-///
-/// Borrowed from dart:ui.
+// Borrowed from dart:ui.
 int hashList(Iterable<Object> arguments) {
   var result = 0;
   if (arguments != null) {

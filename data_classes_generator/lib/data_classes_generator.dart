@@ -7,19 +7,19 @@ import 'package:data_classes/data_classes.dart';
 Builder generateDataClass(BuilderOptions options) =>
     SharedPartBuilder([DataClassGenerator()], 'data_classes');
 
-class DataClassGenerator extends GeneratorForAnnotation<DataClass> {
+class DataClassGenerator extends GeneratorForAnnotation<GenerateDataClassFor> {
   @override
   generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep _) {
-    assert(
-        element is ClassElement, 'Only annotate classes with `@DataClass()`.');
+    assert(element is ClassElement,
+        'Only annotate classes with `@GenerateDataClassFor()`.');
     assert(
         element.name.startsWith('Mutable'),
-        'The names of classes annotated with `@DataClass()` should start with '
-        '`Mutable`, for example `MutableUser`. The immutable class will then '
-        'get automatically generated for you by running '
-        '`pub run build_runner build` (or `flutter pub run build_runner build` '
-        'if you\'re on Flutter).');
+        'The names of classes annotated with `@GenerateDataClassFor()` should '
+        'start with `Mutable`, for example `MutableUser`. The immutable class '
+        'will then get automatically generated for you by running '
+        '`pub run build_runner build` (or '
+        '`flutter pub run build_runner build` if you\'re using Flutter).');
 
     var e = element as ClassElement;
     var name = e.name.substring('Mutable'.length);
@@ -41,26 +41,25 @@ class DataClassGenerator extends GeneratorForAnnotation<DataClass> {
     }
 
     return '''
-    /// This class is the immutable pendant of the Mutable$name class.
+    /// This class is the immutable pendant of the [Mutable$name] class.
     @immutable
     class $name {
       ${fields.map((field) => 'final ${_fieldToTypeAndName(field)};').join()}
 
-      /// Default constructor that creates a $name.
+      /// Default constructor that creates a new [$name] with the given attributes.
       const $name({${fields.map((field) => '${_isNullable(field) ? '' : '@required'} this.${field.name},').join()}}) : ${fields.where((field) => !_isNullable(field)).map((field) => 'assert(${field.name} != null)').join(',')};
 
-      /// Creates a $name from a Mutable$name.
-      factory $name.fromMutable(Mutable$name mutable) {
-        return $name(${fields.map((field) => '${field.name}: mutable.${field.name},').join()});
-      }
+      /// Creates a [$name] from a [Mutable$name].
+      $name.fromMutable(Mutable$name mutable) :
+      ${fields.map((field) => '${field.name} = mutable.${field.name}').join(',')};
 
-      /// Turns this $name into a Mutable$name.
+      /// Turns this [$name] into a [Mutable$name].
       Mutable$name toMutable() {
         return Mutable$name()
           ${fields.map((field) => '..${field.name} = ${field.name}').join()};
       }
 
-      /// Checks if this $name is equal to the other one.
+      /// Checks if this [$name] is equal to the other one.
       bool operator ==(Object other) {
         return other is $name &&
             ${fields.map((field) => '${field.name} == other.${field.name}').join('&&')};
@@ -68,12 +67,19 @@ class DataClassGenerator extends GeneratorForAnnotation<DataClass> {
 
       int get hashCode => hashList([${fields.map((field) => '${field.name},').join()}]);
 
-      $name copyWith({
-        ${fields.map((field) => '${_fieldToTypeAndName(field)},').join()}
-      }) {
-        return $name(${fields.map((field) => field.name).map((fieldName) => '$fieldName: $fieldName ?? this.$fieldName,').join()});
+      /// Copies this [$name] with some changed attributes.
+      $name copy(void Function(Mutable$name mutable) changeAttributes) {
+        assert(changeAttributes != null,
+          "You called $name.copy, but didn't provide a function for changing "
+          "the attributes.\\n"
+          "If you just want an unchanged copy: You don't need one, just use "
+          "the original.");
+        var mutable = this.toMutable();
+        changeAttributes(mutable);
+        return  $name.fromMutable(mutable);
       }
 
+      /// Converts this [$name] into a [String].
       String toString() {
         return '$name(\\n'
           ${fields.map((field) => "'  ${field.name}: \$${field.name}\\n'").join('\n')}

@@ -1,3 +1,9 @@
+## 2.0.0 - 2019-09-20
+
+- Change `@DataClass()` annotation to `@GenerateDataClassFor()`.
+- `GeneratedClass.fromMutable()` is now a normal constructor instead of a
+  factory constructor.
+
 ## 1.1.1 - 2019-09-05
 
 - Fix newline issue in `toString()`.

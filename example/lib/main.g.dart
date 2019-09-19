@@ -6,69 +6,58 @@ part of 'main.dart';
 // DataClassGenerator
 // **************************************************************************
 
-/// This class is the immutable pendant of the MutableUser class.
+/// This class is the immutable pendant of the [MutableFruit] class.
 @immutable
-class User {
-  final String firstName;
-  final String lastName;
-  final String photoUrl;
+class Fruit {
+  final String type;
+  final String color;
 
-  /// Default constructor that creates a User.
-  const User({
-    @required this.firstName,
-    @required this.lastName,
-    this.photoUrl,
-  })  : assert(firstName != null),
-        assert(lastName != null);
+  /// Default constructor that creates a new [Fruit] with the given attributes.
+  const Fruit({
+    @required this.type,
+    this.color,
+  }) : assert(type != null);
 
-  /// Creates a User from a MutableUser.
-  factory User.fromMutable(MutableUser mutable) {
-    return User(
-      firstName: mutable.firstName,
-      lastName: mutable.lastName,
-      photoUrl: mutable.photoUrl,
-    );
+  /// Creates a [Fruit] from a [MutableFruit].
+  Fruit.fromMutable(MutableFruit mutable)
+      : type = mutable.type,
+        color = mutable.color;
+
+  /// Turns this [Fruit] into a [MutableFruit].
+  MutableFruit toMutable() {
+    return MutableFruit()
+      ..type = type
+      ..color = color;
   }
 
-  /// Turns this User into a MutableUser.
-  MutableUser toMutable() {
-    return MutableUser()
-      ..firstName = firstName
-      ..lastName = lastName
-      ..photoUrl = photoUrl;
-  }
-
-  /// Checks if this User is equal to the other one.
+  /// Checks if this [Fruit] is equal to the other one.
   bool operator ==(Object other) {
-    return other is User &&
-        firstName == other.firstName &&
-        lastName == other.lastName &&
-        photoUrl == other.photoUrl;
+    return other is Fruit && type == other.type && color == other.color;
   }
 
   int get hashCode => hashList([
-        firstName,
-        lastName,
-        photoUrl,
+        type,
+        color,
       ]);
 
-  User copyWith({
-    String firstName,
-    String lastName,
-    String photoUrl,
-  }) {
-    return User(
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      photoUrl: photoUrl ?? this.photoUrl,
-    );
+  /// Copies this [Fruit] with some changed attributes.
+  Fruit copy(void Function(MutableFruit mutable) changeAttributes) {
+    assert(
+        changeAttributes != null,
+        "You called Fruit.copy, but didn't provide a function for changing "
+        "the attributes.\n"
+        "If you just want an unchanged copy: You don't need one, just use "
+        "the original.");
+    var mutable = this.toMutable();
+    changeAttributes(mutable);
+    return Fruit.fromMutable(mutable);
   }
 
+  /// Converts this [Fruit] into a [String].
   String toString() {
-    return 'User\n'
-        '  firstName: $firstName\n'
-        '  lastName: $lastName\n'
-        '  photoUrl: $photoUrl\n'
+    return 'Fruit(\n'
+        '  type: $type\n'
+        '  color: $color\n'
         ')';
   }
 }

@@ -3,15 +3,18 @@ import 'package:data_classes/data_classes.dart';
 part 'main.g.dart';
 
 void main() {
-  var me = const User(firstName: 'Marcel', lastName: 'Garus');
-  var mySister = me.copyWith(firstName: 'Yvonne');
+  var freshApple = const Fruit(type: 'apple', color: 'green');
+  var someApple = freshApple.copy((fruit) => fruit..color = null);
+  var kiwi = someApple.copy((fruit) => fruit
+    ..type = 'Kiwi'
+    ..color = 'brown');
+  print(kiwi);
 }
 
-@DataClass()
-class MutableUser {
-  String firstName;
-  String lastName;
+@GenerateDataClassFor()
+class MutableFruit {
+  String type;
 
   @nullable
-  String photoUrl;
+  String color;
 }
