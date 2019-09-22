@@ -1,3 +1,7 @@
+## 2.0.1 - 2019-09-20
+
+- Code generation throws error if problems occur.
+
 ## 2.0.0 - 2019-09-20
 
 - Change `@DataClass()` annotation to `@GenerateDataClassFor()`.

@@ -12,7 +12,7 @@ void main() {
 }
 
 @GenerateDataClassFor()
-class MutableFruit {
+class SomeMutableFruit {
   String type;
 
   @nullable

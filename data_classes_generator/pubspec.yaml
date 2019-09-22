@@ -1,6 +1,6 @@
 name: data_classes_generator
 description: Automatically generates immutable data classes for you based on a mutable "blueprint" class.
-version: 2.0.0
+version: 2.0.1
 author: Marcel Garus <marcel.garus@gmail.com>
 homepage: https://github.com/marcelgarus/data_classes
 
