@@ -22,6 +22,17 @@ class DataClassGenerator extends GeneratorForAnnotation<GenerateDataClassFor> {
         '`flutter pub run build_runner build` if you\'re using Flutter).');
 
     var e = element as ClassElement;
+
+    // build a map of the qualified imports, mapping module identifiers to import prefixes
+    var lib = e.library;
+    Map<String, String> qualifiedImports = new Map();
+    lib.imports.forEach((imp) {
+      if (imp.prefix != null) {
+        var modId = imp.importedLibrary.identifier;
+        qualifiedImports[modId] = imp.prefix.name;
+      }
+    });
+
     var name = e.name.substring('Mutable'.length);
     var fields = <FieldElement>{};
     var getters = <FieldElement>{};
@@ -44,7 +55,7 @@ class DataClassGenerator extends GeneratorForAnnotation<GenerateDataClassFor> {
     /// This class is the immutable pendant of the [Mutable$name] class.
     @immutable
     class $name {
-      ${fields.map((field) => 'final ${_fieldToTypeAndName(field)};').join()}
+      ${fields.map((field) => 'final ${_fieldToTypeAndName(field, qualifiedImports)};').join()}
 
       /// Default constructor that creates a new [$name] with the given attributes.
       const $name({${fields.map((field) => '${_isNullable(field) ? '' : '@required'} this.${field.name},').join()}}) : ${fields.where((field) => !_isNullable(field)).map((field) => 'assert(${field.name} != null)').join(',')};
@@ -92,6 +103,19 @@ class DataClassGenerator extends GeneratorForAnnotation<GenerateDataClassFor> {
   bool _isNullable(FieldElement field) =>
       field.metadata.any((annotation) => annotation.element.name == 'nullable');
 
-  String _fieldToTypeAndName(FieldElement field) =>
-      '${field.type.name} ${field.name}';
+  LibraryElement findLib(Element elem) {
+    var encl = elem.enclosingElement;
+    if (encl == null) {
+      return elem as LibraryElement;
+    } else {
+      return findLib(encl);
+    }
+  }
+
+  String _fieldToTypeAndName(FieldElement field,  Map<String, String> importMap) {
+    var tyLib = field.type.element.library;
+    var prefixOrNull = importMap[tyLib.identifier];
+    var prefix = (prefixOrNull != null) ? (prefixOrNull + ".") : "";
+    return '${prefix}${field.type} ${field.name}';
+  }
 }

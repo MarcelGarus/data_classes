@@ -11,33 +11,49 @@ part of 'main.dart';
 class Fruit {
   final String type;
   final String color;
+  final List<String> baz;
+  final ty.T t;
 
   /// Default constructor that creates a new [Fruit] with the given attributes.
   const Fruit({
     @required this.type,
     this.color,
-  }) : assert(type != null);
+    @required this.baz,
+    @required this.t,
+  })  : assert(type != null),
+        assert(baz != null),
+        assert(t != null);
 
   /// Creates a [Fruit] from a [MutableFruit].
   Fruit.fromMutable(MutableFruit mutable)
       : type = mutable.type,
-        color = mutable.color;
+        color = mutable.color,
+        baz = mutable.baz,
+        t = mutable.t;
 
   /// Turns this [Fruit] into a [MutableFruit].
   MutableFruit toMutable() {
     return MutableFruit()
       ..type = type
-      ..color = color;
+      ..color = color
+      ..baz = baz
+      ..t = t;
   }
 
   /// Checks if this [Fruit] is equal to the other one.
   bool operator ==(Object other) {
-    return other is Fruit && type == other.type && color == other.color;
+    return other is Fruit &&
+        type == other.type &&
+        color == other.color &&
+        baz == other.baz &&
+        t == other.t;
   }
 
   int get hashCode => hashList([
         type,
         color,
+        baz,
+        t,
       ]);
 
   /// Copies this [Fruit] with some changed attributes.
@@ -58,6 +74,8 @@ class Fruit {
     return 'Fruit(\n'
         '  type: $type\n'
         '  color: $color\n'
+        '  baz: $baz\n'
+        '  t: $t\n'
         ')';
   }
 }
