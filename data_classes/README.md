@@ -10,11 +10,11 @@ simple mutable blueprint classes. Here's how to get started:
 
 ```yaml
 dependencies:
-  data_classes: [insert newest version here]
+  data_classes: [version]
 
 dev_dependencies:
-  build_runner: ^1.0.0
-  data_classes_generator: [insert newest version here]
+  build_runner: [version]
+  data_classes_generator: [version]
 ```
 
 **2.** 🧬 Write a blueprint class. Let the name start with `Mutable` and

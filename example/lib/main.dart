@@ -4,7 +4,7 @@ import 'package:example/types.dart' as ty;
 part 'main.g.dart';
 
 void main() {
-  var freshApple = new Fruit(type: 'apple', color: 'green', baz: new List<String>());
+  var freshApple = Fruit(type: 'apple', color: 'green', baz: List<String>());
   var someApple = freshApple.copy((fruit) => fruit..color = null);
   var kiwi = someApple.copy((fruit) => fruit
     ..type = 'Kiwi'
@@ -13,7 +13,7 @@ void main() {
 }
 
 @GenerateDataClassFor()
-class MutableFruit {
+class SomeMutableFruit {
   String type;
 
   @nullable
@@ -26,15 +26,4 @@ class MutableFruit {
   int foo() {
     return baz.length + type.length;
   }
-}
-
-// @DataClass
-mixin _User {
-  List<String> get firstNames;
-  String get lastName;
-  @nullable String get photoUrl;
-}
-
-class Foo {
-
 }

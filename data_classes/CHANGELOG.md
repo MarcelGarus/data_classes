@@ -1,3 +1,7 @@
+## [2.0.2] - 2019-10-09
+
+- Make `freshApple` in example `const`.
+
 ## [2.0.1] - 2019-09-20
 
 - Revise readme: Little typo fixes and document `build_runner` dependency.

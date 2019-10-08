@@ -9,6 +9,6 @@ dependencies:
     path: ../data_classes
 
 dev_dependencies:
-  build_runner: ^1.0.0
+  build_runner: ^1.7.1
   data_classes_generator:
     path: ../data_classes_generator
