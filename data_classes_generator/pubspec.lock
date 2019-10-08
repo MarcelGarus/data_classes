@@ -123,10 +123,10 @@ packages:
   data_classes:
     dependency: "direct main"
     description:
-      name: data_classes
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
+      path: "..\\data_classes"
+      relative: true
+    source: path
+    version: "2.0.1"
   fixnum:
     dependency: transitive
     description:
