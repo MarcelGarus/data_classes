@@ -4,6 +4,10 @@
   (using `import '...' as ...;`).
 - Type-promote fields that take type arguments.
 
+## 2.0.1 - 2019-09-20
+
+- Code generation now throws error if problems occur.
+
 ## 2.0.0 - 2019-09-20
 
 - Change `@DataClass()` annotation to `@GenerateDataClassFor()`.

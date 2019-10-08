@@ -7,19 +7,28 @@ import 'package:data_classes/data_classes.dart';
 Builder generateDataClass(BuilderOptions options) =>
     SharedPartBuilder([DataClassGenerator()], 'data_classes');
 
+class CodeGenerationError extends Error {
+  final String message;
+  CodeGenerationError(this.message);
+  String toString() => message;
+}
+
 class DataClassGenerator extends GeneratorForAnnotation<GenerateDataClassFor> {
   @override
   generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep _) {
-    assert(element is ClassElement,
-        'Only annotate classes with `@GenerateDataClassFor()`.');
-    assert(
-        element.name.startsWith('Mutable'),
-        'The names of classes annotated with `@GenerateDataClassFor()` should '
-        'start with `Mutable`, for example `MutableUser`. The immutable class '
-        'will then get automatically generated for you by running '
-        '`pub run build_runner build` (or '
-        '`flutter pub run build_runner build` if you\'re using Flutter).');
+    if (element is! ClassElement) {
+      throw CodeGenerationError(
+          'Only annotate classes with `@GenerateDataClassFor()`.');
+    }
+    if (!element.name.startsWith('Mutable')) {
+      throw CodeGenerationError(
+          'The names of classes annotated with `@GenerateDataClassFor()` should '
+          'start with `Mutable`, for example `MutableUser`. The immutable class '
+          'will then get automatically generated for you by running '
+          '`pub run build_runner build` (or '
+          '`flutter pub run build_runner build` if you\'re using Flutter).');
+    }
 
     var e = element as ClassElement;
 
