@@ -4,17 +4,30 @@ import 'package:meta/meta.dart';
 
 @immutable
 class GenerateDataClassFor {
-  final bool generateCopy;
+  const GenerateDataClassFor({
+    this.generateCopyWith = true,
+  }) : assert(generateCopyWith != null);
 
-  const GenerateDataClassFor({this.generateCopy = true})
-      : assert(generateCopy != null);
+  final bool generateCopyWith;
+}
+
+@immutable
+class GenerateValueGetters {
+  const GenerateValueGetters({
+    this.usePrefix = false,
+    this.generateNegations = false,
+  })  : assert(usePrefix != null),
+        assert(generateNegations != null);
+
+  final bool usePrefix;
+  final bool generateNegations;
 }
 
 const String nullable = 'nullable';
 
-/// Combine the [Object.hashCode] values of an arbitrary number of objects from
-/// an [Iterable] into one value. This function will return the same value if
-/// given null as if given an empty list.
+/// Combines the [Object.hashCode] values of an arbitrary number of objects
+/// from an [Iterable] into one value. This function will return the same
+/// value if given [null] as if given an empty list.
 // Borrowed from dart:ui.
 int hashList(Iterable<Object> arguments) {
   var result = 0;

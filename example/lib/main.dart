@@ -12,11 +12,11 @@ void main() {
   print(kiwi);
 }
 
-@GenerateDataClassFor()
-class SomeMutableFruit {
+/// A fruit with a doc comment.
+@GenerateDataClassFor(generateCopyWith: true)
+class MutableFruit {
   String type;
 
-  @nullable
   String color;
 
   List<String> baz;
