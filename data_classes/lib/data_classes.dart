@@ -3,8 +3,8 @@ export 'package:meta/meta.dart' show immutable, required;
 import 'package:meta/meta.dart';
 
 @immutable
-class GenerateDataClassFor {
-  const GenerateDataClassFor({
+class GenerateDataClass {
+  const GenerateDataClass({
     this.generateCopyWith = true,
   }) : assert(generateCopyWith != null);
 

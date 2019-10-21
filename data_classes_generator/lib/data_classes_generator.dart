@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:build/src/builder/build_step.dart';
 import 'package:source_gen/source_gen.dart';
@@ -13,7 +14,7 @@ class CodeGenError extends Error {
   String toString() => message;
 }
 
-class DataClassGenerator extends GeneratorForAnnotation<GenerateDataClassFor> {
+class DataClassGenerator extends GeneratorForAnnotation<GenerateDataClass> {
   @override
   generateForAnnotatedElement(
     Element element,
@@ -22,12 +23,12 @@ class DataClassGenerator extends GeneratorForAnnotation<GenerateDataClassFor> {
   ) {
     if (element is! ClassElement) {
       throw CodeGenError(
-          'You can only annotate classes with @GenerateDataClassFor(), but '
+          'You can only annotate classes with @GenerateDataClass(), but '
           '"${element.name}" isn\'t a class.');
     }
     if (!element.name.startsWith('Mutable')) {
       throw CodeGenError(
-          'The names of classes annotated with @GenerateDataClassFor() should '
+          'The names of classes annotated with @GenerateDataClass() should '
           'start with "Mutable", for example Mutable${element.name}. The '
           'immutable class (in that case, ${element.name}) will then get '
           'automatically generated for you by running "pub run build_runner '
@@ -75,7 +76,7 @@ class DataClassGenerator extends GeneratorForAnnotation<GenerateDataClassFor> {
     // there are no nullable fields.
     final generateCopyWith = originalClass.metadata
         .firstWhere((annotation) =>
-            annotation.element.enclosingElement.name == 'GenerateDataClassFor')
+            annotation.element?.enclosingElement?.name == 'GenerateDataClass')
         .constantValue
         .getField('generateCopyWith')
         .toBoolValue();
@@ -99,6 +100,58 @@ class DataClassGenerator extends GeneratorForAnnotation<GenerateDataClassFor> {
           'https://github.com/marcelgarus/data_classes/issues/3');
     }
 
+    // Users can annotate fields that hold an enum value with
+    // `@GenerateValueGetters()` to generate value getters on the immutable
+    // class. Here, we prepare a map from the getter name to its code content.
+    final valueGetters = <String, String>{};
+    for (final field in fields) {
+      final annotation = field.metadata
+          .firstWhere(
+              (annotation) =>
+                  annotation.element?.enclosingElement?.name ==
+                  'GenerateValueGetters',
+              orElse: () => null)
+          ?.computeConstantValue();
+      if (annotation == null) continue;
+
+      final usePrefix = annotation.getField('usePrefix').toBoolValue();
+      final generateNegations =
+          annotation.getField('generateNegations').toBoolValue();
+
+      final enumClass = field.type.element as ClassElement;
+      if (enumClass?.isEnum == false) {
+        throw CodeGenError(
+            'You annotated the Mutable$name\'s ${field.name} with '
+            '@GenerateValueGetters(), but that\'s of '
+            '${enumClass == null ? 'an unknown type' : 'the type ${enumClass.name}'}, '
+            'which is not an enum. @GenerateValueGetters() should only be '
+            'used on fields of an enum type.');
+      }
+
+      final prefix = 'is${usePrefix ? _capitalize(field.name) : ''}';
+      final enumValues = enumClass.fields
+          .where((field) => !['values', 'index'].contains(field.name));
+
+      for (final value in enumValues) {
+        for (final negate in generateNegations ? [false, true] : [false]) {
+          final getter =
+              '$prefix${negate ? 'Not' : ''}${_capitalize(value.name)}';
+          final content = 'this.${field.name} ${negate ? '!=' : '=='} '
+              '${_qualifiedType(value.type, qualifiedImports)}.${value.name}';
+
+          if (valueGetters.containsKey(getter)) {
+            throw CodeGenError(
+                'A conflict occurred while generating value getters. The two '
+                'conflicting value getters of the Mutable$name class are:\n'
+                '- $getter, which tests if ${valueGetters[getter]}\n'
+                '- $getter, which tests if $content');
+          }
+
+          valueGetters[getter] = content;
+        }
+      }
+    }
+
     // Actually generate the class.
     final buffer = StringBuffer();
     buffer.writeAll([
@@ -109,8 +162,15 @@ class DataClassGenerator extends GeneratorForAnnotation<GenerateDataClassFor> {
       'class $name {',
 
       // The field members.
-      for (final field in fields)
-        'final ${_fieldToTypeAndName(field, qualifiedImports)};',
+      for (final field in fields) ...[
+        if (field.documentationComment != null) field.documentationComment,
+        'final ${_fieldToTypeAndName(field, qualifiedImports)};\n',
+      ],
+
+      // The value getters.
+      '\n  // Value getters.',
+      for (final getter in valueGetters.entries)
+        'bool get ${getter.key} => ${getter.value};',
 
       // The default constructor.
       '/// Default constructor that creates a new [$name] with the given',
@@ -205,6 +265,12 @@ class DataClassGenerator extends GeneratorForAnnotation<GenerateDataClassFor> {
         .any((annotation) => annotation.element.name == nullable);
   }
 
+  /// Capitalizes the first letter of a string.
+  String _capitalize(String string) {
+    assert(string.isNotEmpty);
+    return string[0].toUpperCase() + string.substring(1);
+  }
+
   /// Turns the [field] into type and the field name, separated by a space.
   String _fieldToTypeAndName(
     FieldElement field,
@@ -213,9 +279,14 @@ class DataClassGenerator extends GeneratorForAnnotation<GenerateDataClassFor> {
     assert(field != null);
     assert(qualifiedImports != null);
 
-    var typeLibrary = field.type.element.library;
-    var prefixOrNull = qualifiedImports[typeLibrary.identifier];
-    var prefix = (prefixOrNull != null) ? (prefixOrNull + ".") : "";
-    return '${prefix}${field.type} ${field.name}';
+    return '${_qualifiedType(field.type, qualifiedImports)} ${field.name}';
+  }
+
+  /// Turns the [type] into a type with prefix.
+  String _qualifiedType(DartType type, Map<String, String> qualifiedImports) {
+    final typeLibrary = type.element.library;
+    final prefixOrNull = qualifiedImports[typeLibrary.identifier];
+    final prefix = (prefixOrNull != null) ? '$prefixOrNull.' : '';
+    return '$prefix$type';
   }
 }

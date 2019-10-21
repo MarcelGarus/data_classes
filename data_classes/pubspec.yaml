@@ -5,7 +5,7 @@ author: Marcel Garus <marcel.garus@gmail.com>
 homepage: https://github.com/marcelgarus/data_classes
 
 environment:
-  sdk: ">=2.2.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   meta: ^1.1.7

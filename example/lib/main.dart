@@ -4,20 +4,33 @@ import 'package:example/types.dart' as ty;
 part 'main.g.dart';
 
 void main() {
-  var freshApple = Fruit(type: 'apple', color: 'green', baz: List<String>());
+  var freshApple = Fruit(
+    type: 'apple',
+    color: Color.green,
+    baz: <String>[],
+  );
   var someApple = freshApple.copy((fruit) => fruit..color = null);
   var kiwi = someApple.copy((fruit) => fruit
     ..type = 'Kiwi'
-    ..color = 'brown');
+    ..color = Color.brown);
   print(kiwi);
 }
 
+enum Color { red, green, yellow, blue, brown }
+
+enum Shape { round, curved }
+
 /// A fruit with a doc comment.
-@GenerateDataClassFor(generateCopyWith: true)
+@GenerateDataClass(generateCopyWith: true)
 class MutableFruit {
   String type;
 
-  String color;
+  /// The color of this fruit.
+  @GenerateValueGetters(generateNegations: true)
+  Color color;
+
+  @GenerateValueGetters(usePrefix: true)
+  Shape shape;
 
   List<String> baz;
 
