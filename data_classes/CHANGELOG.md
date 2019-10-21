@@ -1,4 +1,11 @@
-## [2.1.0] - 2019-10-09
+## [3.0.0] - 2019-10-21
+
+- Support value getters by annotating the corresponding field with
+  `@GenerateValueGetters()`. You can optionally set `generateNegations` and
+  `usePrefix` to `true`.
+- Update readme.
+
+## [2.1.0] - 2019-10-20
 
 - Make example not show any errors by ignoring `undefined_class` and
   `uri_has_nont_been_generated`.

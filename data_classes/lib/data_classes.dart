@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 @immutable
 class GenerateDataClass {
   const GenerateDataClass({
-    this.generateCopyWith = true,
+    this.generateCopyWith = false,
   }) : assert(generateCopyWith != null);
 
   final bool generateCopyWith;

@@ -13,7 +13,7 @@ void main() {
   print(kiwi);
 }
 
-@GenerateDataClassFor()
+@GenerateDataClass()
 class MutableFruit {
   String type;
 
