@@ -1,36 +1,53 @@
 import 'package:data_classes/data_classes.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-import 'colors.dart' as colors;
+import 'colors.dart';
 
 part 'main.g.dart';
 
 enum Shape { round, curved }
 
+abstract class _Statement {
+  int get line;
+  int get doubleLine => line * 2;
+}
+
+abstract class ColorGettable {
+  Color get color;
+}
+
 /// A fruit with a doc comment.
-@GenerateDataClass()
-class MutableFruit {
-  String name;
-
-  /// The color of this fruit.
-  @GenerateValueGetters(generateNegations: true)
-  colors.Color color;
-
-  @GenerateValueGetters(usePrefix: true)
+@JsonSerializable()
+//@GenerateDataClass()
+abstract class _Fruit extends _Statement implements ColorGettable {
+  Color get color;
   @nullable
-  Shape shape;
+  Shape get shape;
 
-  List<String> likedBy;
+  List<Shape> get doubleShape => [shape, shape];
+}
+
+// --- generated code ---
+
+@immutable
+class Statement extends _Statement {
+  final int line;
+  Statement(this.line);
+}
+
+@immutable
+class Fruit extends _Fruit {
+  final Color color;
+  final Shape shape;
+
+  Fruit({
+    @required this.color,
+    this.shape,
+  });
 }
 
 void main() {
-  var freshApple = Fruit(
-    name: 'apple',
-    color: colors.Color.green,
-    likedBy: <String>[],
-  );
-  var someApple = freshApple.copy((fruit) => fruit..color = null);
-  var kiwi = someApple.copy((fruit) => fruit
-    ..name = 'Kiwi'
-    ..color = colors.Color.brown);
-  print(kiwi);
+  final a = Fruit();
+  a.doubleShape;
+  a.doubleLine;
 }
