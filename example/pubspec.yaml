@@ -4,6 +4,9 @@ version: 1.0.0
 author: Marcel Garus <marcel.garus@gmail.com>
 homepage: https://github.com/marcelgarus/flutter_data_classes
 
+environment:
+  sdk: ">=2.6.0-dev.8.2 <3.0.0"
+
 dependencies:
   data_classes: ^3.0.0
   json_serializable: ^3.2.3
