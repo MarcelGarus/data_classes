@@ -9,7 +9,7 @@ builders:
     target: ":data_classes_generator"
     import: "package:data_classes_generator/data_classes_generator.dart"
     builder_factories: ["generateDataClass"]
-    build_extensions: {".dart": [".data_classes.g.part"]}
+    build_extensions: { ".dart": [".data_classes.g.part"] }
     auto_apply: dependents
     build_to: cache
     applies_builders: ["source_gen|combining_builder"]

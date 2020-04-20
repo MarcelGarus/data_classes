@@ -1,3 +1,8 @@
+Looking for data classes? Check out the [<kbd>freezed</kbd>](https://pub.dev/packages/freezed) package, it is more ergonomic and has a lot of fancy features.  
+Looking for has/is getters? Check out the [<kbd>has_is_getters</kbd>](https://pub.dev/packages/has_is_getters) package!
+
+---
+
 Hey there!
 If you're reading this and want data classes to become a language-level feature
 of Dart, consider giving
